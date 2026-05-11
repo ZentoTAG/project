@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 #include "database.h"
 #include <QMainWindow>
+#include <QTableWidget>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QStringList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,6 +23,10 @@ public:
 
 private slots:
     void on_calculateBtn_clicked();
+
+    void on_generateBtn_clicked();
+
+    void on_budgetCalcBtn_clicked();
 
 private:
     Database m_db;

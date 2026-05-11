@@ -53,3 +53,56 @@ void MainWindow::on_calculateBtn_clicked(){
     m_db.saveUser(age, weight, height);
 }
 
+
+void MainWindow::on_generateBtn_clicked() {
+    // Настраиваем таблицу: 3 строки, 4 колонки
+    ui->planTable->setRowCount(3);
+    ui->planTable->setColumnCount(4);
+    ui->planTable->setHorizontalHeaderLabels({"Продукт", "Граммы", "Цена", "БЖУ"});
+
+    // Временные примеры данных
+    ui->planTable->setItem(0, 0, new QTableWidgetItem("Гречка"));
+    ui->planTable->setItem(0, 1, new QTableWidgetItem("200 г"));
+    ui->planTable->setItem(0, 2, new QTableWidgetItem("25 ₽"));
+    ui->planTable->setItem(0, 3, new QTableWidgetItem("Б: 12, Ж: 3, У: 68"));
+
+    ui->planTable->setItem(1, 0, new QTableWidgetItem("Курица"));
+    ui->planTable->setItem(1, 1, new QTableWidgetItem("150 г"));
+    ui->planTable->setItem(1, 2, new QTableWidgetItem("45 ₽"));
+    ui->planTable->setItem(1, 3, new QTableWidgetItem("Б: 35, Ж: 5, У: 0"));
+
+    ui->planTable->setItem(2, 0, new QTableWidgetItem("Молоко"));
+    ui->planTable->setItem(2, 1, new QTableWidgetItem("400 мл"));
+    ui->planTable->setItem(2, 2, new QTableWidgetItem("20 ₽"));
+    ui->planTable->setItem(2, 3, new QTableWidgetItem("Б: 12, Ж: 10, У: 18"));
+
+    ui->planStatusLabel->setText("Это демо-план. Позже будет реальный расчёт.");
+}
+
+
+void MainWindow::on_budgetCalcBtn_clicked()
+{
+    QString goalName = ui->goalNameInput->text();
+    double goalAmount = ui->goalAmountInput->text().toDouble();
+    double dailyBudget = 200.0;
+    double monthlyIncome = 10000.0;
+    double monthlyFoodCost = dailyBudget * 30;
+    double monthlySavings = monthlyIncome - monthlyFoodCost;
+
+    if (goalAmount <= 0) {
+        ui->budgetResultLabel->setText("Введите корректную сумму цели.");
+        return;
+    }
+
+    int months = static_cast<int>(goalAmount / monthlySavings) + 1;
+    ui->budgetResultLabel->setText(
+        QString("На цель «%1» потребуется %2 мес. (откладывая %3 ₽/мес.)")
+            .arg(goalName)
+            .arg(months)
+            .arg(monthlySavings, 0, 'f', 0)
+        );
+
+    ui->budgetProgressBar->setRange(0, static_cast<int>(goalAmount));
+    ui->budgetProgressBar->setValue(0);
+    ui->budgetProgressLabel->setText("0 / " + QString::number(goalAmount, 'f', 0) + " ₽");
+}
