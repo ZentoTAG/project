@@ -20,7 +20,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_calculateBtn_clicked(){
-    // Считываем возраст, вес и рост из полей ввода
+    // считываем возраст, вес и рост из полей ввода
     int age = ui->ageInput->text().toInt();
     double weight = ui->weightInput->text().toDouble();
     double height = ui->heightInput->text().toDouble();
@@ -34,9 +34,9 @@ void MainWindow::on_calculateBtn_clicked(){
 
     double calories = bmr * 1.375;
 
-    double protein = calories * 0.30 / 4;    // 1 г белка = 4 ккал
-    double fat = calories * 0.25 / 9;        // 1 г жира = 9 ккал
-    double carbs = calories * 0.45 / 4;      // 1 г углеводов = 4 ккал
+    double protein = calories * 0.20 / 4;
+    double fat = calories * 0.25 / 9;
+    double carbs = calories * 0.55 / 4;
 
     // Выводим результат
     QString result = QString(
@@ -54,29 +54,67 @@ void MainWindow::on_calculateBtn_clicked(){
 }
 
 
-void MainWindow::on_generateBtn_clicked() {
-    // Настраиваем таблицу: 3 строки, 4 колонки
-    ui->planTable->setRowCount(3);
-    ui->planTable->setColumnCount(4);
-    ui->planTable->setHorizontalHeaderLabels({"Продукт", "Граммы", "Цена", "БЖУ"});
+void MainWindow::on_generateBtn_clicked()
+{
+    QVector<QVariantMap> products = m_db.getProducts();
+    if (products.isEmpty()) {
+        ui->planStatusLabel->setText("База продуктов пуста.");
+        return;
+    }
 
-    // Временные примеры данных
-    ui->planTable->setItem(0, 0, new QTableWidgetItem("Гречка"));
-    ui->planTable->setItem(0, 1, new QTableWidgetItem("200 г"));
-    ui->planTable->setItem(0, 2, new QTableWidgetItem("25 ₽"));
-    ui->planTable->setItem(0, 3, new QTableWidgetItem("Б: 12, Ж: 3, У: 68"));
+    QVariantMap user = m_db.getLastUser();
+    double dailyCalories = 2200.0;
+    double dailyProtein, dailyFat, dailyCarbs; // объявление без инициализации
 
-    ui->planTable->setItem(1, 0, new QTableWidgetItem("Курица"));
-    ui->planTable->setItem(1, 1, new QTableWidgetItem("150 г"));
-    ui->planTable->setItem(1, 2, new QTableWidgetItem("45 ₽"));
-    ui->planTable->setItem(1, 3, new QTableWidgetItem("Б: 35, Ж: 5, У: 0"));
+    if (!user.isEmpty()) {
+        int age = user["age"].toInt();
+        double weight = user["weight"].toDouble();
+        double height = user["height"].toDouble();
 
-    ui->planTable->setItem(2, 0, new QTableWidgetItem("Молоко"));
-    ui->planTable->setItem(2, 1, new QTableWidgetItem("400 мл"));
-    ui->planTable->setItem(2, 2, new QTableWidgetItem("20 ₽"));
-    ui->planTable->setItem(2, 3, new QTableWidgetItem("Б: 12, Ж: 10, У: 18"));
+        if (age > 0 && weight > 0 && height > 0) {
+            double bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+            dailyCalories = bmr * 1.375;
+        }
+    }
+    // единый правильный расчёт для обоих случаев
+    dailyProtein = dailyCalories * 0.20 / 4.0;   // 20% белки
+    dailyFat    = dailyCalories * 0.25 / 9.0;    // 25% жиры
+    dailyCarbs  = dailyCalories * 0.55 / 4.0;    // 55% углеводы
 
-    ui->planStatusLabel->setText("Это демо-план. Позже будет реальный расчёт.");
+    double dailyBudget = ui->foodBudgetInput->text().isEmpty()
+                             ? 200.0
+                             : ui->foodBudgetInput->text().toDouble();
+
+    DietPlan planResult = m_optimizer.optimize(products, dailyCalories, dailyProtein,
+                                               dailyFat, dailyCarbs, dailyBudget);
+
+    ui->planTable->setRowCount(planResult.items.size());
+    ui->planTable->setColumnCount(3);
+    ui->planTable->setHorizontalHeaderLabels({"Продукт", "Граммы", "Цена"});
+
+    for (int i = 0; i < planResult.items.size(); ++i) {
+        ui->planTable->setItem(i, 0, new QTableWidgetItem(planResult.items[i].first));
+        double grams = planResult.items[i].second;
+        ui->planTable->setItem(i, 1, new QTableWidgetItem(QString::number(grams, 'f', 0) + " г"));
+
+        double pricePer100g = 0.0;
+        for (const auto &p : products) {
+            if (p["name"].toString() == planResult.items[i].first) {
+                pricePer100g = p["price"].toDouble();
+                break;
+            }
+        }
+        double cost = pricePer100g * (grams / 100.0);
+        ui->planTable->setItem(i, 2, new QTableWidgetItem(QString::number(cost, 'f', 1) + " ₽"));
+    }
+
+    ui->planStatusLabel->setText(
+        QString("План на день. Калорий: %1, Белков: %2 г, Жиров: %3 г, Углеводов: %4 г, Бюджет: %5 ₽")
+            .arg(dailyCalories, 0, 'f', 0)
+            .arg(dailyProtein, 0, 'f', 1)
+            .arg(dailyFat, 0, 'f', 1)
+            .arg(dailyCarbs, 0, 'f', 1)
+            .arg(planResult.totalCost, 0, 'f', 0));
 }
 
 
@@ -84,13 +122,19 @@ void MainWindow::on_budgetCalcBtn_clicked()
 {
     QString goalName = ui->goalNameInput->text();
     double goalAmount = ui->goalAmountInput->text().toDouble();
-    double dailyBudget = 200.0;
-    double monthlyIncome = 10000.0;
-    double monthlyFoodCost = dailyBudget * 30;
+    double monthlyIncome = ui->incomeInput->text().toDouble();
+    double dailyFoodBudget = ui->foodBudgetInput->text().toDouble();
+
+    if (goalAmount <= 0 || monthlyIncome <= 0 || dailyFoodBudget <= 0) {
+        ui->budgetResultLabel->setText("Заполните все поля корректными числами.");
+        return;
+    }
+
+    double monthlyFoodCost = dailyFoodBudget * 30;
     double monthlySavings = monthlyIncome - monthlyFoodCost;
 
-    if (goalAmount <= 0) {
-        ui->budgetResultLabel->setText("Введите корректную сумму цели.");
+    if (monthlySavings <= 0) {
+        ui->budgetResultLabel->setText("С такими расходами накопить не получится.");
         return;
     }
 

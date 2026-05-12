@@ -11,261 +11,210 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SmartDiet</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="mainLayout">
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="tab_2">
+      <!-- ВКЛАДКА ПРОФИЛЬ -->
+      <widget class="QWidget" name="tabProfile">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>Профиль</string>
        </attribute>
-       <widget class="QLabel" name="label">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>100</y>
-          <width>58</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>возраст</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>140</y>
-          <width>58</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>вес</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_3">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>180</y>
-          <width>58</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>рост</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="ageInput">
-        <property name="geometry">
-         <rect>
-          <x>190</x>
-          <y>100</y>
-          <width>113</width>
-          <height>26</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="weightInput">
-        <property name="geometry">
-         <rect>
-          <x>190</x>
-          <y>140</y>
-          <width>113</width>
-          <height>26</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="heightInput">
-        <property name="geometry">
-         <rect>
-          <x>190</x>
-          <y>180</y>
-          <width>113</width>
-          <height>26</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="calculateBtn">
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>210</y>
-          <width>141</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>рассчитать результат</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="resultLabel">
-        <property name="geometry">
-         <rect>
-          <x>200</x>
-          <y>240</y>
-          <width>111</width>
-          <height>171</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>результат</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="profileLayout">
+        <item>
+         <layout class="QFormLayout" name="profileForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="ageLabel">
+            <property name="text">
+             <string>Возраст (лет):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="ageInput"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="weightLabel">
+            <property name="text">
+             <string>Вес (кг):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="weightInput"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="heightLabel">
+            <property name="text">
+             <string>Рост (см):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="heightInput"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="calculateBtn">
+          <property name="text">
+           <string>Рассчитать БЖУ</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="resultLabel">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="profileSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </widget>
-      <widget class="QWidget" name="tab">
+      <!-- ВКЛАДКА ПЛАН ПИТАНИЯ -->
+      <widget class="QWidget" name="tabPlan">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>План питания</string>
        </attribute>
-       <widget class="QPushButton" name="generateBtn">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>80</y>
-          <width>151</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Сгенерировать план</string>
-        </property>
-       </widget>
-       <widget class="QTableWidget" name="planTable">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>110</y>
-          <width>256</width>
-          <height>192</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLabel" name="planStatusLabel">
-        <property name="geometry">
-         <rect>
-          <x>160</x>
-          <y>310</y>
-          <width>58</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="planLayout">
+        <item>
+         <widget class="QPushButton" name="generateBtn">
+          <property name="text">
+           <string>Сгенерировать план</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="planTable"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="planStatusLabel">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <!-- ВКЛАДКА БЮДЖЕТ -->
+      <widget class="QWidget" name="tabBudget">
        <attribute name="title">
-        <string>Страница</string>
+        <string>Бюджет</string>
        </attribute>
-       <widget class="QLabel" name="ponyal">
-        <property name="geometry">
-         <rect>
-          <x>70</x>
-          <y>60</y>
-          <width>58</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>цель</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="pidor">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>90</y>
-          <width>101</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>сумма цели</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="budgetCalcBtn">
-        <property name="geometry">
-         <rect>
-          <x>150</x>
-          <y>120</y>
-          <width>86</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>рассчитать</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="budgetResultLabel">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>180</y>
-          <width>251</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-       <widget class="QProgressBar" name="budgetProgressBar">
-        <property name="geometry">
-         <rect>
-          <x>140</x>
-          <y>150</y>
-          <width>118</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="value">
-         <number>24</number>
-        </property>
-       </widget>
-       <widget class="QLabel" name="budgetProgressLabel">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>180</y>
-          <width>221</width>
-          <height>71</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="goalNameInput">
-        <property name="geometry">
-         <rect>
-          <x>140</x>
-          <y>60</y>
-          <width>113</width>
-          <height>26</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="goalAmountInput">
-        <property name="geometry">
-         <rect>
-          <x>140</x>
-          <y>90</y>
-          <width>113</width>
-          <height>26</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="budgetLayout">
+        <item>
+         <layout class="QFormLayout" name="budgetForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="goalNameLabel">
+            <property name="text">
+             <string>Цель:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="goalNameInput"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="goalAmountLabel">
+            <property name="text">
+             <string>Сумма цели (₽):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="goalAmountInput"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="incomeLabel">
+            <property name="text">
+             <string>Доход в месяц (₽):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="incomeInput"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="foodBudgetLabel">
+            <property name="text">
+             <string>Бюджет на еду в день (₽):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="foodBudgetInput"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="budgetCalcBtn">
+          <property name="text">
+           <string>Рассчитать бюджет</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="budgetResultLabel">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="budgetProgressBar">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="budgetProgressLabel">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="budgetSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -280,12 +229,6 @@
      <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>не чет не хочу пока</string>
-    </property>
-   </widget>
-   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

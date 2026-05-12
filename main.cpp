@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     db.createTables();
+    db.seedProducts();
     MainWindow w;
     w.show();
     return QCoreApplication::exec();

@@ -9,11 +9,13 @@ CONFIG += c++17
 
 SOURCES += \
     database.cpp \
+    dietoptimizer.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     database.h \
+    dietoptimizer.h \
     mainwindow.h
 
 FORMS += \
