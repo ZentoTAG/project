@@ -1,5 +1,5 @@
 #include "magnitparser.h"
-
+#include <QRegularExpression>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -107,19 +107,58 @@ QVector<QVariantMap> MagnitParser::loadProducts()
     {
         QJsonObject obj = value.toObject();
 
+        QString name =
+            obj["name"].toString().toLower();
+
+
+        // фильтрация мусора
+
+        if (name.contains("корм") ||
+            name.contains("kitekat") ||
+            name.contains("whiskas") ||
+            name.contains("napitok") ||
+            name.contains("напиток") ||
+            name.contains("cola") ||
+            name.contains("pepsi") ||
+            name.contains("sprite") ||
+            name.contains("fanta"))
+        {
+            continue;
+        }
+
+        // очистка названия
+
+        name.remove(
+            QRegularExpression(
+                "\\d+\\s?(г|кг|мл|л)"
+                )
+            );
+
+        name.remove("(");
+        name.remove(")");
+
+        name = name.trimmed();
+
+
+        // создание продукта
+
         QVariantMap product;
 
-        product["id"] =
-            obj["id"].toString();
-
-        product["name"] =
-            obj["name"].toString();
+        product["name"] = name;
 
         product["price"] =
             obj["price"].toInt() / 100.0;
 
         product["category"] =
             "Магнит";
+
+        product["calories"] = 0;
+        product["protein"] = 0;
+        product["fat"] = 0;
+        product["carbs"] = 0;
+        product["sugar"] = 0;
+        product["salt"] = 0;
+        product["tags"] = "";
 
         products.append(product);
     }

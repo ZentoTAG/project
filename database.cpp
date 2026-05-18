@@ -25,16 +25,31 @@ bool Database::saveUser(int age, double weight, double height) {
     qDebug() << "Пользователь сохранён в базу.";
     return true;
 }
-bool Database::openDatabase(const QString &path)
-{
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName(path);
 
-    if (!m_db.open()) {
-        qDebug() << "Ошибка открытия базы данных:" << m_db.lastError().text();
-        return false;
+bool Database::openDatabase(const QString &path) {
+    if (QSqlDatabase::contains("main_connection")) {
+        m_db = QSqlDatabase::database("main_connection");
     }
+    else
+    {
+        m_db = QSqlDatabase::addDatabase(
+            "QSQLITE",
+            "main_connection"
+            );
+
+        m_db.setDatabaseName(path);
+
+        if (!m_db.open())
+        {
+            qDebug() << "Ошибка открытия базы данных:"
+                     << m_db.lastError().text();
+
+            return false;
+        }
+    }
+
     qDebug() << "База данных открыта:" << path;
+
     return true;
 }
 
@@ -76,10 +91,14 @@ void Database::createTables()
 
 void Database::closeDatabase()
 {
-    if (m_db.isOpen()) {
+    if (m_db.isOpen())
+    {
         m_db.close();
-        qDebug() << "База данных закрыта.";
     }
+
+    QSqlDatabase::removeDatabase("main_connection");
+
+    qDebug() << "База данных закрыта.";
 }
 
 void Database::seedProducts()
