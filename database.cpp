@@ -48,23 +48,26 @@ void Database::createTables()
                "height REAL"
                ")");
 
-    // таблица продуктов
-    query.exec("CREATE TABLE IF NOT EXISTS products ("
-               "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-               "name TEXT, "
-               "price REAL, "
-               "calories REAL, "
-               "protein REAL, "
-               "fat REAL, "
-               "carbs REAL"
-               ")");
-
     // таблица бюджета
     query.exec("CREATE TABLE IF NOT EXISTS budget ("
                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                "goal_name TEXT, "
                "goal_amount REAL, "
                "saved REAL DEFAULT 0"
+               ")");
+
+    query.exec("CREATE TABLE IF NOT EXISTS products ("
+               "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+               "name TEXT, "
+               "category TEXT, "
+               "price REAL, "
+               "calories REAL, "
+               "protein REAL, "
+               "fat REAL, "
+               "carbs REAL, "
+               "sugar REAL DEFAULT 0, "
+               "salt REAL DEFAULT 0, "
+               "tags TEXT"
                ")");
 
     qDebug() << "Таблицы созданы.";
@@ -81,36 +84,53 @@ void Database::closeDatabase()
 void Database::seedProducts()
 {
     QSqlQuery query(m_db);
-    // очистка старых данных
     query.exec("DELETE FROM products");
 
-    // стартовый набор продуктов
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Гречка', 25.0, 340.0, 12.0, 3.0, 68.0)");
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Куриное филе', 45.0, 110.0, 23.0, 2.0, 0.0)");
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Молоко', 20.0, 60.0, 3.0, 3.5, 4.8)");
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Яйца', 10.0, 155.0, 13.0, 11.0, 1.0)");
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Рис', 15.0, 330.0, 7.0, 1.0, 74.0)");
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Макароны', 12.0, 350.0, 12.0, 1.0, 72.0)");
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Хлеб', 8.0, 265.0, 8.0, 3.0, 49.0)");
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Творог', 35.0, 110.0, 18.0, 2.0, 3.0)");
-    query.exec("INSERT INTO products (name, price, calories, protein, fat, carbs) VALUES ('Бананы', 60.0, 95.0, 1.5, 0.5, 21.0)");
+    query.exec("INSERT INTO products "
+               "(name, category, price, calories, protein, fat, carbs, sugar, salt, tags) VALUES "
 
-    qDebug() << "Продукты добавлены в базу.";
+               "('Куриное филе', 'protein', 45, 110, 23, 2, 0, 0, 0.1, 'gluten_free,lactose_free'),"
+               "('Яйца', 'protein', 10, 155, 13, 11, 1, 0, 0.2, 'gluten_free,lactose_free'),"
+               "('Творог', 'dairy', 35, 110, 18, 5, 3, 3, 0.1, 'gluten_free'),"
+               "('Тунец', 'protein', 80, 130, 28, 1, 0, 0, 0.3, 'gluten_free,lactose_free'),"
+
+               "('Рис', 'carbs', 15, 330, 7, 1, 74, 0, 0.01, 'gluten_free,vegan'),"
+               "('Гречка', 'carbs', 25, 340, 12, 3, 68, 0, 0.01, 'gluten_free,vegan'),"
+               "('Овсянка', 'carbs', 20, 370, 13, 7, 62, 1, 0.01, 'vegan'),"
+               "('Картофель', 'carbs', 12, 77, 2, 0.4, 17, 1, 0.01, 'gluten_free,vegan'),"
+
+               "('Яблоки', 'fruits', 40, 52, 0.3, 0.2, 14, 10, 0.01, 'gluten_free,vegan'),"
+               "('Бананы', 'fruits', 60, 95, 1.5, 0.5, 21, 17, 0.01, 'gluten_free,vegan'),"
+
+               "('Брокколи', 'vegetables', 50, 34, 3, 0.4, 7, 1.5, 0.02, 'gluten_free,vegan'),"
+               "('Морковь', 'vegetables', 20, 41, 1, 0.2, 10, 5, 0.05, 'gluten_free,vegan'),"
+
+               "('Молоко', 'dairy', 20, 60, 3, 3.5, 4.8, 5, 0.1, 'gluten_free'),"
+               "('Сыр', 'dairy', 50, 360, 25, 28, 1, 0.5, 1.2, 'gluten_free'),"
+
+               "('Орехи', 'fats', 90, 600, 20, 50, 15, 4, 0.01, 'gluten_free,vegan'),"
+               "('Оливковое масло', 'fats', 70, 900, 0, 100, 0, 0, 0, 'gluten_free,vegan,lactose_free')"
+               );
+    qDebug() << "Продукты с тегами добавлены.";
 }
 
 QVector<QVariantMap> Database::getProducts()
 {
     QVector<QVariantMap> products;
     QSqlQuery query(m_db);
-    query.exec("SELECT name, price, calories, protein, fat, carbs FROM products");
+query.exec("SELECT name, category, price, calories, protein, fat, carbs, sugar, salt, tags FROM products");
     while (query.next()) {
         QVariantMap product;
-        product["name"] = query.value(0).toString();
-        product["price"] = query.value(1).toDouble();
-        product["calories"] = query.value(2).toDouble();
-        product["protein"] = query.value(3).toDouble();
-        product["fat"] = query.value(4).toDouble();
-        product["carbs"] = query.value(5).toDouble();
+        product["name"]     = query.value(0).toString();
+        product["category"] = query.value(1).toString();
+        product["price"]    = query.value(2).toDouble();
+        product["calories"] = query.value(3).toDouble();
+        product["protein"]  = query.value(4).toDouble();
+        product["fat"]      = query.value(5).toDouble();
+        product["carbs"]    = query.value(6).toDouble();
+        product["sugar"]    = query.value(7).toDouble();
+        product["salt"]     = query.value(8).toDouble();
+        product["tags"]     = query.value(9).toString();
         products.append(product);
     }
     return products;

@@ -18,9 +18,8 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
-      <!-- ВКЛАДКА ПРОФИЛЬ -->
       <widget class="QWidget" name="tabProfile">
        <attribute name="title">
         <string>Профиль</string>
@@ -78,9 +77,45 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Медицинский профиль</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="healthCombo">
+          <item>
+           <property name="text">
+            <string>Обычный</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Гипертония</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Без глютена</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Без лактозы</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Диабет</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
          <spacer name="profileSpacer">
           <property name="orientation">
-           <enum>Qt::Vertical</enum>
+           <enum>Qt::Orientation::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -92,7 +127,6 @@
         </item>
        </layout>
       </widget>
-      <!-- ВКЛАДКА ПЛАН ПИТАНИЯ -->
       <widget class="QWidget" name="tabPlan">
        <attribute name="title">
         <string>План питания</string>
@@ -102,6 +136,13 @@
          <widget class="QPushButton" name="generateBtn">
           <property name="text">
            <string>Сгенерировать план</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="diverseCheck">
+          <property name="text">
+           <string>Разнообразное питание</string>
           </property>
          </widget>
         </item>
@@ -120,7 +161,6 @@
         </item>
        </layout>
       </widget>
-      <!-- ВКЛАДКА БЮДЖЕТ -->
       <widget class="QWidget" name="tabBudget">
        <attribute name="title">
         <string>Бюджет</string>
@@ -204,7 +244,7 @@
         <item>
          <spacer name="budgetSpacer">
           <property name="orientation">
-           <enum>Qt::Vertical</enum>
+           <enum>Qt::Orientation::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>

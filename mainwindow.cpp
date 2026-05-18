@@ -76,6 +76,7 @@ void MainWindow::on_generateBtn_clicked()
             dailyCalories = bmr * 1.375;
         }
     }
+
     // единый правильный расчёт для обоих случаев
     dailyProtein = dailyCalories * 0.20 / 4.0;   // 20% белки
     dailyFat    = dailyCalories * 0.25 / 9.0;    // 25% жиры
@@ -85,8 +86,18 @@ void MainWindow::on_generateBtn_clicked()
                              ? 200.0
                              : ui->foodBudgetInput->text().toDouble();
 
+    // определяем профиль
+    HealthProfile profile = HealthProfile::Normal;
+    QString hp = ui->healthCombo->currentText();
+    if (hp == "Диабет")           profile = HealthProfile::Diabetic;
+    else if (hp == "Гипертония")  profile = HealthProfile::Hypertension;
+    else if (hp == "Без глютена") profile = HealthProfile::GlutenFree;
+    else if (hp == "Без лактозы") profile = HealthProfile::LactoseIntolerant;
+
+    bool diverse = ui->diverseCheck->isChecked();
+    qDebug() << "diverse:" << diverse;
     DietPlan planResult = m_optimizer.optimize(products, dailyCalories, dailyProtein,
-                                               dailyFat, dailyCarbs, dailyBudget);
+                                               dailyFat, dailyCarbs, dailyBudget, profile, diverse);
 
     ui->planTable->setRowCount(planResult.items.size());
     ui->planTable->setColumnCount(3);
