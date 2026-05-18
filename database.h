@@ -10,11 +10,12 @@ public:
     ~Database();
 
     bool openDatabase(const QString &path);
+
     void createTables();
     void closeDatabase();
     bool saveUser(int age, double weight, double height);
     void seedProducts(); // заполнение таблицы продуктов начальными данными
-
+    bool insertProducts(const QVector<QVariantMap> &products);
     QVector<QVariantMap> getProducts(); // возщвратвсех продуктов из бд
     QVariantMap getLastUser();
 

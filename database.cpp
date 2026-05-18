@@ -1,4 +1,5 @@
 #include "database.h"
+#include "magnitparser.h"
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
@@ -147,4 +148,38 @@ QVariantMap Database::getLastUser()
         user["height"] = query.value(2).toDouble();
     }
     return user;
+}
+
+bool Database::insertProducts(const QVector<QVariantMap> &products)
+{
+    QSqlQuery query(m_db);
+
+    for (const auto &p : products)
+    {
+        query.prepare(
+            "INSERT INTO products "
+            "(name, category, price, calories, protein, fat, carbs, sugar, salt, tags) "
+            "VALUES "
+            "(:name, :category, :price, :calories, :protein, :fat, :carbs, :sugar, :salt, :tags)"
+            );
+
+        query.bindValue(":name", p["name"]);
+        query.bindValue(":category", p["category"]);
+        query.bindValue(":price", p["price"]);
+        query.bindValue(":calories", p["calories"]);
+        query.bindValue(":protein", p["protein"]);
+        query.bindValue(":fat", p["fat"]);
+        query.bindValue(":carbs", p["carbs"]);
+        query.bindValue(":sugar", p["sugar"]);
+        query.bindValue(":salt", p["salt"]);
+        query.bindValue(":tags", p["tags"]);
+
+        if (!query.exec())
+        {
+            qDebug() << "Ошибка вставки:"
+                     << query.lastError().text();
+        }
+    }
+
+    return true;
 }

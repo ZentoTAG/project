@@ -1,6 +1,6 @@
 QT += widgets
 QT += core gui sql
-
+QT += network
 CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -10,12 +10,14 @@ CONFIG += c++17
 SOURCES += \
     database.cpp \
     dietoptimizer.cpp \
+    magnitparser.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     database.h \
     dietoptimizer.h \
+    magnitparser.h \
     mainwindow.h
 
 FORMS += \

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "magnitparser.h"
 #include "database.h"
 #include <QApplication>
 
@@ -11,7 +12,14 @@ int main(int argc, char *argv[])
         return -1;
     }
     db.createTables();
-    db.seedProducts();
+    // db.seedProducts();
+    MagnitParser parser;
+
+    QVector<QVariantMap> parsed =
+        parser.loadProducts();
+    qDebug() << "PARSED COUNT =" << parsed.size();
+    db.insertProducts(parsed);
+    qDebug() << "Спарсили:" << parsed.size();
     MainWindow w;
     w.show();
     return QCoreApplication::exec();
